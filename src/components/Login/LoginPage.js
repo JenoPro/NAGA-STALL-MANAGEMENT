@@ -31,6 +31,17 @@ export default {
         // Simulate API call
         await this.simulateLogin()
 
+        // Store the username in localStorage for use across components
+        localStorage.setItem('currentUser', this.username);
+        
+        // If you're using Vuex store, you can also commit the username
+        if (this.$store && this.$store.commit) {
+          this.$store.commit('auth/setUser', {
+            username: this.username,
+            // Add other user data as needed
+          });
+        }
+
         // Handle successful login
         this.$router.push('/dashboard') // Navigate to dashboard
 
@@ -87,12 +98,16 @@ export default {
   },
 
   mounted() {
+    // Clear any existing user data when login page is mounted
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('authToken');
+    
     // Any initialization logic when component is mounted
     console.log('Login page mounted')
   },
 
   beforeUnmount() {
-    // Cleanup if needed
-    this.resetForm()
+    // Cleanup if needed (but don't reset form here as we want to keep the username)
+    // this.resetForm()
   },
 }
